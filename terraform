@@ -1,0 +1,17 @@
+# activar log en consola
+export TF_LOG=TRACE
+
+# Disabled
+export TF_LOG=
+
+# Activar log en fichero
+export TF_LOG_PATH=./terraform.log
+
+# Disabled
+export TF_LOG_PATH=
+
+#disable prompts for variables 0 = false
+export TF_INPUT=0
+
+
+

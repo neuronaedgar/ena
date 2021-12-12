@@ -1,0 +1,6 @@
+# Create the user
+pveum user add terraform@pve --password ppillo
+
+# Assign the user the correct role
+pveum aclmod / -user terraform@pve -role Administrator
+

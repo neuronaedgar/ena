@@ -1,0 +1,144 @@
+https://registry.terraform.io/providers/Telmate/proxmox/latest/docs/guides/installation#how-to-get-terraform-to-recognize-third-party-provider
+
+# install terraform 
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+apt-get update && sudo apt-get install terraform
+
+# Verify the installation
+terraform -help
+
+# Enable tab completion
+terraform -install-autocomplete
+
+# Download and install Go
+wget https://golang.org/dl/go1.16.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go && tar -C /usr/local -xzf go1.16.linux-amd64.tar.gz
+
+vim $HOME/.profile
+export PATH=$PATH:/usr/local/go/bin
+
+go version
+
+# install proxmox provider GitHub Telmate
+git clone https://github.com/Telmate/terraform-provider-proxmox.git
+cd terraform-provider-proxmox/
+
+make
+
+sudo go install github.com/Telmate/terraform-provider-proxmox/cmd/terraform-provider-proxmox
+
+PLUGIN_ARCH=linux_amd64
+mkdir -p ~/.terraform.d/plugins/registry.example.com/telmate/proxmox/1.0.0/$PLUGIN_ARCH
+
+cp bin/terraform-provider-proxmox ~/.terraform.d/plugins/registry.example.com/telmate/proxmox/1.0.0/$PLUGIN_ARCH/
+sudo cp $GOPATH/bin/terraform-provider-proxmox /usr/local/bin/
+
+
+# Create the user n Proxmox
+pveum user add terraform@pve --password ppillo
+
+# Assign the user the correct role
+pveum aclmod / -user terraform@pve -role Administrator
+
+
+# create main.tf
+vim main.tf
+terraform {
+  required_providers {
+    proxmox = {
+      source  = "registry.example.com/telmate/proxmox"
+      version = ">=1.0.0"
+    }
+  }
+  required_version = ">= 0.13"
+}
+
+resource "proxmox_vm_qemu" "k3s_server" {
+  count             = 1
+  name              = "kubernetes-master-${count.index}"
+  target_node       = "pve"
+
+  clone             = "debian-10-cloudinit-template"
+
+  os_type           = "cloud-init"
+  cores             = 4
+  sockets           = "1"
+  cpu               = "host"
+  memory            = 1024
+  scsihw            = "virtio-scsi-pci"
+  bootdisk          = "scsi0"
+
+  disk {
+#   id              = 0
+    size            = "20G"
+    type            = "scsi"
+    storage         = "local-lvm"
+#   storage_type    = "lvm"
+#   iothread        = true
+    iothread        = 1
+  }
+
+  network {
+#   id              = 0
+    model           = "virtio"
+    bridge          = "vmbr0"
+  }
+
+  lifecycle {
+    ignore_changes  = [
+      network,
+    ]
+  }
+
+  # Cloud Init Settings
+  ipconfig0         = "ip=192.168.0.11${count.index + 1}/24,gw=192.168.0.1"
+
+  sshkeys = <<EOF
+  ${var.ssh_key}
+  EOF
+}
+
+# create variables.tf
+vim variables.tf
+variable "pm_api_url" {
+  default = "https://192.168.0.100:8006/api2/json"
+}
+
+variable "pm_user" {
+#  default = "root@pam"
+  default = "terraform@pve"
+}
+
+variable "pm_password" {
+  default = "ppillo"
+}
+
+variable "ssh_key" {
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4I5X+6LsnYrKEYLblEKXv2NAsQyoPgGip9qYFMBzDt7BiisZuaWhl8VczN/3j0A8dUqcZh1R/Wxc/Vf9595EupJ9uktHkI9exyJT3Eg0/DCZ6xkYSu4069U8ep1jErB0YlOwZfkFglrqhDCvtQeRMiMpa7/EypbU+tYbNF7epmyrVSA47CftrgoIVvuP2wJM1sVf6cldsFRGmnBf2VSMCDx3jAOxjVIY6HxCJq96zy2qfdlQqyHCq8zkvJwYvpMJnUhM6T3hRqNBhm3Pwqz3SgKYR0k/JELzJl2O+6vOuLPkdgZSkbt16Vu7qHeJSu8npXU+xnKHHTrXXaa0JW/Vf root@pve"
+}
+
+# create provider.tf
+vim provider.tf
+provider "proxmox" {
+  pm_parallel       = 1
+  pm_tls_insecure   = true
+  pm_api_url        = var.pm_api_url
+  pm_password       = var.pm_password
+  pm_user           = var.pm_user
+}
+
+
+
+export TF_LOG=TRACE
+
+terraform init
+terraform validate
+terraform plan
+terraform apply
+
+
+referencias:
+https://norocketscience.at/provision-proxmox-virtual-machines-with-terraform/
+https://yetiops.net/posts/proxmox-terraform-cloudinit-saltstack-prometheus/
+
