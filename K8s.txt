@@ -1,0 +1,54 @@
+# Borrar namespace
+kubectl delete namespace default-mem-example
+
+# Ver el Deployment
+kubectl get deployments
+
+# Ver Pods & services
+kubectl get pods
+kubectl get pod -o wide
+kubectl get services
+kubectl get svc -o wide
+kubectl describe pods
+
+
+# Ver los eventos del clúster
+kubectl get events
+kubectl cluster-info
+kubectl cluster-info dump
+
+# Ver la configuración:
+kubectl config view
+
+# ver namespace
+kubectl get namespace
+
+# ver pods y servicios en namespace determinado.
+kubectl get pod,svc -n kube-system
+
+echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n"; kubectl proxy
+
+export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
+echo Name of the Pod: $POD_NAME
+
+curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/
+
+kubectl logs $POD_NAME
+
+kubectl exec -ti $POD_NAME -- bash
+
+
+kubectl create deployment hello-node --image=k8s.gcr.io/echoserver:1.4
+kubectl expose deployment hello-node --name=hello-nodenodeport --port=80 --target-port=8080 --type=NodePort
+
+NODEPORT=$(kubectl get -o jsonpath="{.spec.ports[0].nodePort}" services hello-nodenodeport)
+echo $NODEPORT
+
+NODES=$(kubectl get nodes -o jsonpath='{ $.items[*].status.addresses[?(@.type=="InternalIP")].address }')
+for node in $NODES; do curl -s $node:$NODEPORT | grep -i client_address; done
+echo $NODES
+
+kubectl patch svc hello-nodenodeport -p '{"spec":{"externalTrafficPolicy":"Local"}}'
+for node in $NODES; do curl --connect-timeout 1 -s $node:$NODEPORT | grep -i client_address; done
+
+
