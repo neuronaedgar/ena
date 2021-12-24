@@ -10,7 +10,7 @@ kubectl get pod -o wide
 kubectl get services
 kubectl get svc -o wide
 kubectl describe pods
-
+kubectl get all --all-namespaces
 
 # Ver los eventos del clúster
 kubectl get events
@@ -19,12 +19,49 @@ kubectl cluster-info dump
 
 # Ver la configuración:
 kubectl config view
+kubectl get pod -n kube-system -o wide
+
+# Ver nodos worker corriendo.
+kubectl get nodes
+kubectl describe node nombrenodo
 
 # ver namespace
 kubectl get namespace
 
 # ver pods y servicios en namespace determinado.
 kubectl get pod,svc -n kube-system
+
+# Desplegar mediante comandos yaml
+kubectl create -f catalogocursos-mysql-pv.yaml
+
+# Ver ingress
+kubectl get ingress
+
+# Aplicar todos las configuraciones POD's SVC, etc en yaml
+kubectl apply -f .
+
+# Borrar todo los POD's SVC, etc en yaml
+kubectl delete -f .
+
+# Escalar un deploy a 3 replicas
+kubectl scale deployment nginx --replicas=3
+
+
+# deployar un Pod de nginx
+kubectl run nginx --image nginx
+
+# exportar un Pod desplegado
+kubectl get pod nginx -o yaml > mi-primer.yaml
+
+# crear un archivo de template
+kubectl create deployment meu-nginx --image=nginx --dry-run=client -o yaml > deployment-template.yaml
+
+# man de kubectl
+kubectl explain deployment
+kubectl explain pod --recursive
+kubectl explain deployment.spec.template.spec
+
+
 
 echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n"; kubectl proxy
 

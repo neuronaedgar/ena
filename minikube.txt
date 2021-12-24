@@ -1,0 +1,58 @@
+
+minikube status
+minikube stop
+
+# arrancar minikube
+minikube start --cpus 2 --memory 5680
+minikube start --driver=virtualbox
+minikube start --alsologtostderr -v=7
+minikube start --nodes 2 -p multinode-demo  # a partir de la versión 1.10.1
+
+
+# make docker the default driver:
+minikube config set driver docker
+minikube config set driver virtualbox
+minikube config set memory 6144
+minikube config set cpus 4
+
+# acceso a la máquina virtual
+minikube ssh 
+
+# borrado de la máquina virtual
+minikube delete 
+
+minikube ip
+
+# Acceso a la máquina virtual creada por Minikube
+minikube ssh 
+
+# dashboard web 
+minikube dashboard
+
+# Logs  
+minikube logs
+
+# pedirle a minikube la url para conectarnos a la base de datos desde cualquier cliente externo
+minikube service catalogocursos-mysql-service --url
+
+# listado profile existentes
+minikube profile list
+
+# Minikube dispone de addons:
+minikube addons list
+
+# Habilitar addons:
+minikube addons enable ingress
+
+# dashboard o url de acceso a la gestión
+minikube dashboard --url
+
+kubectl cluster-info
+kubectl config view
+
+eval $(minikube docker-env)
+docker ps
+
+
+minikube service --namespace sensu-system list
+minikube service --namespace default list
