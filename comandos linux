@@ -1,0 +1,11 @@
+# listar pertenencia de grupos usuario
+id -nG
+groups
+getent group
+getent group docker
+
+# listar columnas
+getent group | awk -F: '{ print $1}'
+getent group | cut -d: -f1
+
+

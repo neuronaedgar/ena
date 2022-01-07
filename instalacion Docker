@@ -1,0 +1,36 @@
+# Paso 1: Instalar Docker
+# Instalaremos Docker desde el repositorio oficial de Docker. 
+sudo apt update
+
+# instalar  requisitos previos que permitan a apt usar paquetes a través de HTTPS:
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+
+# añadir clave de GPG para el repositorio oficial de Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+# Agregar el repositorio de Docker a las fuentes de APT
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+ 
+# Actualizar base de datos de APT el repositorio de Docker
+sudo apt update
+ 
+# Ver la instalación desde el repositorio de Docker
+apt-cache policy docker-ce
+
+# instalar Docker:
+sudo apt install docker-ce
+ 
+# Comprobar funcionamiento
+sudo systemctl status docker
+
+
+# Paso 2 : Ejecutar Docker sin sudo
+# Agregar nombre de usuario al grupo docker:
+sudo usermod -aG docker ${USER}
+sudo usermod -aG docker username
+
+# Se debe reiniciar el equipo o cerrar la sesión del servidor y iniciarla
+su - ${USER}
+
+# validar insercion del grupo en el usuario
+id -nG

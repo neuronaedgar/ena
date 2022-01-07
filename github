@@ -17,3 +17,44 @@ git push -u origin main
 git remote add origin https://github.com/neuronaedgar/terraform.git
 git branch -M main
 git push -u origin main
+
+
+# Enumera las conexiones remotas que tienes con otros repositorios.
+git remote -v
+git remote
+
+# Remove the connection to the remote repository called ＜name＞
+git remote rm <name>
+
+git remote show origin
+
+# Deletes any local branches for ＜NAME＞ that are not present on the remote repository.
+git remote PRUNE
+ 
+# listado ramas repositorios remotas "remote-repo/" y locales "origin/"
+git branch -r
+
+# Chnage the new upstream repository you've specified for your fork
+git remote add upstream https://github.com/octocat/Spoon-Knife.git
+
+
+# Assuming their updates are on master, and you are on the branch you want to merge the changes into.
+git remote add origin https://github.com/<github-username>/<repo-name>.git
+git pull origin master
+
+# want to push the merge back to your copy of the repository:
+git push <remote-name> <branch-name>
+git push origin master
+
+# Descarga el contenido remoto, pero sin actualizar el estado de trabajo del repositorio local.
+git fetch <remote>
+git fetch <remote> <branch>
+git fetch --dry-run
+git fetch upstream
+git merge upstream/main
+
+# Descarga el contenido remoto a la rama local activa e inmediatamente ejecuta git merge para crear un commit fusionado con el nuevo contenido remoto.
+git pull 
+
+# lista de referencia de las ramas locales.
+git branch
