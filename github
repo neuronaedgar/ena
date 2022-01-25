@@ -1,7 +1,18 @@
 # Omite --global para configurar tu identidad solo en este repositorio
 git config --global user.email "neuronaedgar@gmail.com"
 git config --global core.askpass
+git config --global color.ui auto   # false
 
+# configuración predeterminada "local" aplica al repositorio de contexto: .git/config
+git config --local 
+
+# Configuración "global" se aplica usuario de un sistema operativo: ~/.gitconfig
+git config --global 
+
+# Configuración "system" se aplica a todo servidor (usuarios/repositorios): $(prefix)/etc/gitconfig
+git config --system 
+
+## Modificar en local y queremos sincronizar con remoto
 # Indícar a Git que realice el seguimiento de tu nuevo archivo
 git add fichero.txt
 
@@ -24,7 +35,6 @@ git merge future-plans
 
 
 # create a new repository on the command line
-
 echo "# terraform" >> README.md
 git init
 git add README.md
@@ -34,7 +44,6 @@ git remote add origin https://github.com/neuronaedgar/terraform.git
 git push -u origin main
 
 # push an existing repository from the command line
-
 git remote add origin https://github.com/neuronaedgar/terraform.git
 git branch -M main
 git push -u origin main
