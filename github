@@ -1,5 +1,26 @@
 # Omite --global para configurar tu identidad solo en este repositorio
 git config --global user.email "neuronaedgar@gmail.com"
+git config --global core.askpass
+
+# Indícar a Git que realice el seguimiento de tu nuevo archivo
+git add fichero.txt
+
+# Confirmacion "instantánea""staging area" preparada en el historial del proyecto.
+git commit -m 'cometario de los cambios realizados'
+
+# enviar cambios a la rama principal (la rama de Bitbucket) en el origen (Bitbucket Server)
+git push origin main 
+
+# crear una rama, pero no te lleva a ella.
+git branch future-plans
+
+# Extrae la nueva rama que acabas de crear. Puntero a la nueva rama.
+git checkout future-plans 
+
+# Fusionar rama local future-plans a rama principal
+git status
+git checkout main
+git merge future-plans
 
 
 # create a new repository on the command line
@@ -25,7 +46,6 @@ git remote
 
 # Remove the connection to the remote repository called ＜name＞
 git remote rm <name>
-
 git remote show origin
 
 # Deletes any local branches for ＜NAME＞ that are not present on the remote repository.
@@ -36,7 +56,6 @@ git branch -r
 
 # Chnage the new upstream repository you've specified for your fork
 git remote add upstream https://github.com/octocat/Spoon-Knife.git
-
 
 # Assuming their updates are on master, and you are on the branch you want to merge the changes into.
 git remote add origin https://github.com/<github-username>/<repo-name>.git
@@ -58,3 +77,12 @@ git pull
 
 # lista de referencia de las ramas locales.
 git branch
+
+
+
+# Ejemplo describe método publicar local a repositorio central
+git checkout main
+git fetch origin main
+git rebase -i origin/main
+# Squash commits, fix up commit messages etc.
+git push origin main
