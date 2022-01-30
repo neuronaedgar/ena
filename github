@@ -9,7 +9,7 @@ git config --local
 # Configuración "global" se aplica usuario de un sistema operativo: ~/.gitconfig
 git config --global 
 
-# Configuración "system" se aplica a todo servidor (usuarios/repositorios): $(prefix)/etc/gitconfig
+# Configuración "system" aplica a todo servidor usuarios/repositorios: $(prefix)/etc/gitconfig
 git config --system 
 
 ## Modificar en local y queremos sincronizar con remoto
@@ -95,3 +95,9 @@ git fetch origin main
 git rebase -i origin/main
 # Squash commits, fix up commit messages etc.
 git push origin main
+
+# create a fork of a repository,
+gh repo fork 
+
+
+
