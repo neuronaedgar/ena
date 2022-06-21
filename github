@@ -19,7 +19,7 @@ git add fichero.txt
 # Confirmacion "instantánea""staging area" preparada en el historial del proyecto.
 git commit -m 'cometario de los cambios realizados'
 
-# enviar cambios a la rama principal (la rama de Bitbucket) en el origen (Bitbucket Server)
+# enviar cambios a la rama main (la rama de Bitbucket) en el origen (Bitbucket Server)
 git push origin main 
 
 # crear una rama, pero no te lleva a ella.
@@ -33,7 +33,24 @@ git status
 git checkout main
 git merge future-plans
 
+## la rama master y 'origin/master' han divergido,
+# Integrar los cambios de origin/master en rama local y crear una fusión commit.
+git merge origin/master
+o ---- A ---- B origin/master (upstream work) 
+       \ C master (your work)
 
+o ---- A ---- B origin/master (upstream work) 
+        \ C -- \ M master (your work)
+
+# Copia commit C (tu trabajo) como si lo hubieras basado en commit B en lugar de A.
+git rebase origin/master
+o ---- A ---- B origin/master (upstream work) 
+       \ C master (your work)
+
+o ---- A ---- B origin/master (upstream work) 
+               \ C' master (your work)
+
+##
 # create a new repository on the command line
 echo "# terraform" >> README.md
 git init
@@ -86,8 +103,6 @@ git pull
 
 # lista de referencia de las ramas locales.
 git branch
-
-
 
 # Ejemplo describe método publicar local a repositorio central
 git checkout main
